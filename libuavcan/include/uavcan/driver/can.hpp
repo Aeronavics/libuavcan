@@ -59,13 +59,13 @@ struct UAVCAN_EXPORT CanFrame
 
     static const uint8_t MaxDataLen = CanBusType::max_frame_size;
 
-    static CanFrameDLC lengthToDlc(uint_fast8_t length) 
+    static CanFrameDLC lengthToDlc(uint_fast8_t length)
     {
         /**
          * Lookup table to map a CAN frame length to a DLC value
          * that will accommodate the frame.
          */
-        constexpr uint8_t length_to_dlc_lookup[] = 
+        constexpr uint8_t length_to_dlc_lookup[] =
         {
             0,1,2,3,4,5,6,7,8,
             9, 9, 9, 9,
@@ -79,23 +79,23 @@ struct UAVCAN_EXPORT CanFrame
 
         static_assert(std::extent<decltype(length_to_dlc_lookup)>::value == 65, "length_to_dlc_lookup table is malformed.");
 
-        if (length < std::extent<decltype(length_to_dlc_lookup)>::value) 
+        if (length < std::extent<decltype(length_to_dlc_lookup)>::value)
         {
             return CanFrameDLC(length_to_dlc_lookup[length]);
-        } 
-        else 
+        }
+        else
         {
             return CanFrameDLC::invalid_code;
         }
     }
 
-    static uint_fast8_t dlcToLength(CanFrameDLC dlc) 
+    static uint_fast8_t dlcToLength(CanFrameDLC dlc)
     {
         /**
          * Lookup table to map a DLC value to the maximum data
          * payload length supported for the DLC.
          */
-        constexpr uint8_t dlc_to_length_lookup[] = 
+        constexpr uint8_t dlc_to_length_lookup[] =
         {
             0,1,2,3,4,5,6,7,8,12,16,20,24,32,48,64
         };
@@ -103,11 +103,11 @@ struct UAVCAN_EXPORT CanFrame
         static_assert(std::extent<decltype(dlc_to_length_lookup)>::value == 16, "dlc_to_length_lookup table is malformed.");
 
         const auto dlc_value = static_cast<std::underlying_type<CanFrameDLC>::type>(dlc);
-        if (dlc_value < std::extent<decltype(dlc_to_length_lookup)>::value) 
+        if (dlc_value < std::extent<decltype(dlc_to_length_lookup)>::value)
         {
             return dlc_to_length_lookup[dlc_value];
-        } 
-        else 
+        }
+        else
         {
             return 0;
         }
@@ -117,7 +117,7 @@ struct UAVCAN_EXPORT CanFrame
     uint8_t data[MaxDataLen];
 
 private:
-    CanFrameDLC dlc;                ///< Data Length Code
+
 public:
 
     CanFrame() :
@@ -177,6 +177,8 @@ public:
      */
     bool priorityHigherThan(const CanFrame& rhs) const;
     bool priorityLowerThan(const CanFrame& rhs) const { return rhs.priorityHigherThan(*this); }
+
+    CanFrameDLC dlc;                ///< Data Length Code
 };
 
 /**
